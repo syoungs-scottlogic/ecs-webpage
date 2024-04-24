@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECS Project Web Page</title>
+</head>
+<body>
+    <p>
+        Welcome to the ECS project webpage!
+        <p>
+            This project is launched via ECS using an Nginx docker image.
+            <p>
+                Todays date and time is: <span id='date-time'></span>
+            </p>
+        </p>
+        <script>
+            var dateTime = new Date();
+            document.getElementById('date-time').innerHTML=dateTime.toLocaleString();
+        </script>
+    </p>
+</body>
+</html>
