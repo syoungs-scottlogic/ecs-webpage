@@ -4,9 +4,14 @@ import os
 import aws_cdk as cdk
 
 from ecs_webpage.ecs_webpage_stack import EcsWebpageStack
+from ecs_webpage.ecs_stack import EcStack
 
 
 app = cdk.App()
+# the stack for ECS cluster and VPC. 
+EcStack(app, "EcsStack")
+
+# primary stack
 EcsWebpageStack(app, "EcsWebpageStack",
     # If you don't specify 'env', this stack will be environment-agnostic.
     # Account/Region-dependent features and context lookups will not work,
