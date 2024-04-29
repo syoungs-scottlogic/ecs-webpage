@@ -3,21 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
     <title>ECS Project Web Page</title>
 </head>
 <body>
-    <p>
-        Welcome to the ECS project webpage!
+    <div class="header">
+        <div class="header1"></div>
+        <div class="header2"></div>
+        <div class="header3"></div>
+    </div>
+    <div class="middle">
         <p>
-            This project is launched via ECS using an Nginx docker image.
+            Welcome to the ECS project webpage!
             <p>
-                Todays date and time is: <span id='date-time'></span>
+                This project is launched via ECS using an Nginx docker image.
+                <p>
+                    Todays date and time is: <span id='date-time'></span>
+                </p>
             </p>
+            <script>
+                var dateTime = new Date();
+                document.getElementById('date-time').innerHTML=dateTime.toLocaleString();
+            </script>
         </p>
-        <script>
-            var dateTime = new Date();
-            document.getElementById('date-time').innerHTML=dateTime.toLocaleString();
-        </script>
-    </p>
+    </div>
+    <div class="footer">
+        <div class="footer1"></div>
+        <div class="footer2"></div>
+        <div class="footer3"></div>
+    </div>
 </body>
 </html>
