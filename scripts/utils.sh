@@ -43,3 +43,15 @@ function yes_no_prompt {
     esac
     done
 }
+
+function get_sso_Profile {
+    locatl aws_account_id=$(aws sts get-caller-entity --profile $1 --filter "Account")
+
+    echo "$aws_account_id"
+}
+
+function get_aws_region {
+    locatl aws_region$(aws configure get region --profile)
+
+    echo "$aws_region"
+}

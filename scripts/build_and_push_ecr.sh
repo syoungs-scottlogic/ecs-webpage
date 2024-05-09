@@ -65,25 +65,30 @@ if [[ -z $IMAGE_TAG ]]; then
     highlight "cyan" "$IMAGE_TAG"
 fi
 
+AWS_ACCOUNT=$(get_sso_Profile)
+AWS_REGION=$(get_aws_region)
 
 function build_image {
     cd "$ROOT_DIR/web-server" 
-    docker build -t web-server-repo .
-    # docker build -t <acc>.dkr.ecr.eu-west-2.amazonaws.com/$IMAGE_NAME:$IMAGE_TAG .
+    #docker build -t web-server-repo .
+    docker build -t "$AWS_ACCOUNT".dkr.ecr."$AWS_REGION".amazonaws.com/$IMAGE_NAME:$IMAGE_TAG .
+}
+
+function confirm_push {
+    echo "Pushing the following:"
+    echo -n "Image:"
+    highlight "green" "$IMAGE_NAME:$IMAGE_TAG"
+    echo -n "ECR Registry"
+    highlight "purple" "$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME"
+    echo
+    yes_no_prompt
 }
 
 function push_to_aws {
-    aws ecr get-login-password --profile $PROFILE --region eu-west-2 | docker login --username AWS --password-stdin <acc>.dkr.ecr.eu-west-2.amazonaws.com
-
-    #docker push <acc>.dkr.ecr.eu-west-2.amazonaws.com/web-server-repo:<tag>
+    aws ecr get-login-password --profile "$PROFILE" --region "$AWS_REGION" | docker login --username AWS --password-stdin "$AWS_ACCOUNT".dkr.ecr."$AWS_REGION".amazonaws.com
+    confirm_push
+    docker push "$AWS_ACCOUNT".dkr.ecr."$AWS_REGION".amazonaws.com/"$IMAGE_NAME":"$IMAGE_TAG"
 }
-
-function verify_aws_sso {
-    # verify aws sts and get account.
-    #aws sts get-caller-identity
-}
-
-echo "$ROOT_DIR"
 
 # ECR build commands
 
@@ -94,7 +99,3 @@ echo "$ROOT_DIR"
 # docker tag web-server-repo:latest <acc>.dkr.ecr.eu-west-2.amazonaws.com/web-server-repo:<version>
 
 # docker push <acc>.dkr.ecr.eu-west-2.amazonaws.com/web-server-repo:<tag>
-
-# add check showing full image name with are you sure you want to push? y/n
-
-# Get region with aws configure get region --profile
