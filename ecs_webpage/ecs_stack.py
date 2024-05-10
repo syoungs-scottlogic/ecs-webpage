@@ -23,3 +23,10 @@ class EcStack(Stack):
             cluster_name="web-server-cluster",
             vpc=ecs_vpc
             )
+        # add task role
+        task_definition = ecs.Ec2TaskDefinition(
+            self,
+            id="task-def",
+            task_role=task_role,
+        )
+        #add container https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_ecs/Ec2TaskDefinition.html
