@@ -65,37 +65,38 @@ if [[ -z $IMAGE_TAG ]]; then
     highlight "cyan" "$IMAGE_TAG"
 fi
 
-AWS_ACCOUNT=$(get_sso_Profile)
-AWS_REGION=$(get_aws_region)
+AWS_ACCOUNT=$(get_sso_Profile "$PROFILE")
+AWS_REGION=$(get_aws_region "$PROFILE")
 
 function build_image {
     cd "$ROOT_DIR/web-server" 
-    #docker build -t web-server-repo .
+    # Check if docker is running. If not, exit script. If so, build image.
+    docker ps > /dev/null 2>&1 || highlight "red" "Docker is not running. Please start Docker before running" exit 1
     docker build -t "$AWS_ACCOUNT".dkr.ecr."$AWS_REGION".amazonaws.com/$IMAGE_NAME:$IMAGE_TAG .
+
+    push_to_aws
 }
 
 function confirm_push {
+    echo
     echo "Pushing the following:"
-    echo -n "Image:"
+    echo -n "Image: "
     highlight "green" "$IMAGE_NAME:$IMAGE_TAG"
-    echo -n "ECR Registry"
+    echo -n "ECR Registry "
     highlight "purple" "$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME"
     echo
     yes_no_prompt
 }
 
+    # Log in before confirming if you want to push
 function push_to_aws {
-    aws ecr get-login-password --profile "$PROFILE" --region "$AWS_REGION" | docker login --username AWS --password-stdin "$AWS_ACCOUNT".dkr.ecr."$AWS_REGION".amazonaws.com
-    confirm_push
-    docker push "$AWS_ACCOUNT".dkr.ecr."$AWS_REGION".amazonaws.com/"$IMAGE_NAME":"$IMAGE_TAG"
+    if aws ecr get-login-password --profile "$PROFILE" --region "$AWS_REGION" | docker login --username AWS --password-stdin "$AWS_ACCOUNT".dkr.ecr."$AWS_REGION".amazonaws.com ; then
+        confirm_push
+        docker push "$AWS_ACCOUNT".dkr.ecr."$AWS_REGION".amazonaws.com/"$IMAGE_NAME":"$IMAGE_TAG"
+    else
+        highlight "red" "ECR login failed."
+        exit 1
+    fi
 }
 
-# ECR build commands
-
-# aws ecr get-login-password --profile $PROFILE --region eu-west-2 | docker login --username AWS --password-stdin <acc>.dkr.ecr.eu-west-2.amazonaws.com
-
-# docker build -t web-server-repo .
-
-# docker tag web-server-repo:latest <acc>.dkr.ecr.eu-west-2.amazonaws.com/web-server-repo:<version>
-
-# docker push <acc>.dkr.ecr.eu-west-2.amazonaws.com/web-server-repo:<tag>
+build_image
