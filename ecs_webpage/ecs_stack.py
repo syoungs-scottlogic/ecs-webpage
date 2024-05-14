@@ -12,7 +12,7 @@ class EcStack(Stack):
         
         ecs_vpc = ec2.Vpc(
             self,
-            id="WebServerVPC"
+            "WebServerVPC",
             vpc_name="ECS_VPC",
             ip_addresses=ec2.IpAddresses.cidr("10.0.0.0/8"),
             max_azs=1            
@@ -26,7 +26,7 @@ class EcStack(Stack):
         # add task role
         task_definition = ecs.Ec2TaskDefinition(
             self,
-            id="task-def",
+            "task-def",
             task_role=task_role,
         )
         #add container https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_ecs/Ec2TaskDefinition.html

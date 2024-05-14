@@ -13,7 +13,7 @@ class EcsWebpageStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         ecr.Repository(self,
-                    id="web-server-repository",
+                    "web-server-repository",
                     repository_name="web-server-repo",
                     image_tag_mutability=ecr.TagMutability.IMMUTABLE,
                     empty_on_delete=True,
