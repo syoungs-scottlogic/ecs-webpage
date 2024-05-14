@@ -15,6 +15,9 @@
     ]
   },
   "context": {
+    "ecs-cluster-name": "web-server-cluster",
+    "ecr-repo-name": "web-server-repo",
+    "nginx-image-tag": "2.0",
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
     "@aws-cdk/core:checkSecretUsage": true,
     "@aws-cdk/core:target-partitions": [
